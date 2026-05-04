@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Project — TaskFlow</title>
+  <meta name="description" content="Project task board"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand">⚡ Task<span>Flow</span></div>
+    <div class="navbar-right">
+      <div class="user-chip">
+        <div class="user-avatar" id="user-avatar">U</div>
+        <span class="user-name" id="user-name">User</span>
+      </div>
+      <button class="btn-ghost btn-sm" id="logout-btn">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container page-wrapper">
+    <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+
+    <div class="project-layout">
+      <!-- Sidebar -->
+      <aside class="card sidebar" style="padding:1.25rem">
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Project Info</div>
+          <div style="font-size:1rem;font-weight:700;margin-bottom:0.3rem" id="project-title">Loading...</div>
+          <div style="font-size:0.82rem;color:var(--text-muted);line-height:1.5" id="project-desc"></div>
+          <div style="margin-top:0.75rem" id="my-role-badge"></div>
+        </div>
+
+        <div class="glow-line"></div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Members</div>
+          <div id="member-list"><div class="spinner" style="margin:0.5rem auto;width:20px;height:20px;border-width:2px"></div></div>
+        </div>
+
+        <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem">
+          <button class="btn-primary" id="add-task-btn" style="display:none;width:100%;justify-content:center">+ Add Task</button>
+          <button class="btn-ghost" id="add-member-btn" style="display:none;width:100%;justify-content:center">+ Add Member</button>
+        </div>
+      </aside>
+
+      <!-- Main Board -->
+      <main>
+        <div class="filter-bar">
+          <div class="filter-chip active" data-filter="">All</div>
+          <div class="filter-chip" data-filter="To Do">To Do</div>
+          <div class="filter-chip" data-filter="In Progress">In Progress</div>
+          <div class="filter-chip" data-filter="Done">Done</div>
+        </div>
+
+        <div class="kanban-board" id="kanban-board">
+          <div class="page-loader" style="grid-column:1/-1"><div class="spinner"></div></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Task Modal -->
+  <div class="modal-overlay" id="task-modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="task-modal-title">Create Task</div>
+        <button class="modal-close" id="task-modal-close">✕</button>
+      </div>
+      <form id="task-form">
+        <input type="hidden" id="task-id"/>
+        <div class="form-group">
+          <label class="form-label" for="task-title">Task Title *</label>
+          <input type="text" id="task-title" placeholder="e.g. Design login screen" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="task-desc">Description</label>
+          <textarea id="task-desc" rows="3" placeholder="Task details..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="task-due">Due Date</label>
+            <input type="date" id="task-due"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="task-priority">Priority</label>
+            <select id="task-priority">
+              <option value="Low">Low</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="High">High</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="task-status">Status</label>
+          <select id="task-status">
+            <option value="To Do">To Do</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Done">Done</option>
+          </select>
+        </div>
+        <div class="form-group" id="task-assignee-group">
+          <label class="form-label" for="task-assignee">Assign To</label>
+          <select id="task-assignee"><option value="">Unassigned</option></select>
+        </div>
+        <div style="display:flex;gap:0.75rem;justify-content:space-between;margin-top:1rem;align-items:center">
+          <button type="button" class="btn-danger btn-sm" id="task-delete-btn" style="display:none">Delete Task</button>
+          <div style="display:flex;gap:0.5rem;margin-left:auto">
+            <button type="button" class="btn-ghost" onclick="document.getElementById('task-modal-overlay').classList.remove('active')">Cancel</button>
+            <button type="submit" class="btn-primary">Save Task</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Member Modal -->
+  <div class="modal-overlay" id="member-modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Add Member</div>
+        <button class="modal-close" id="member-modal-close">✕</button>
+      </div>
+      <form id="member-form">
+        <div class="form-group">
+          <label class="form-label" for="member-email">User Email *</label>
+          <input type="email" id="member-email" placeholder="team@example.com" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="member-role">Role</label>
+          <select id="member-role">
+            <option value="Member">Member</option>
+            <option value="Admin">Admin</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1rem">
+          <button type="button" class="btn-ghost" onclick="document.getElementById('member-modal-overlay').classList.remove('active')">Cancel</button>
+          <button type="submit" class="btn-primary">Add Member</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/project.js"></script>
+</body>
+</html>
