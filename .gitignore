@@ -17,3 +17,4 @@ Thumbs.db
 # Database
 *.sqlite
 backend/prisma/*.db
+backend/mongodb_data/
